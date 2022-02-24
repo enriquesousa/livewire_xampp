@@ -4,16 +4,24 @@ namespace App\Http\Livewire;
 
 use App\Models\Post;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CreatePost extends Component
 {
+    use WithFileUploads;
+
     public $open = false;
-    public $title, $content;
+    public $title, $content, $image, $idinputimagen;
 
     protected $rules = [
         'title' => 'required',
         'content' => 'required',
+        'image' => 'required|image|max:2048', //image max 2Mb
     ];
+
+    public function mount(){
+        $this->idinputimagen = \rand();
+    }
 
     /* // se ejecuta cada vez que cambia una de las propiedades title or content
     public function updated($propertyName){
@@ -27,17 +35,22 @@ class CreatePost extends Component
 
         sleep(1); // simular tiempo de carga internet
         
+        // guardar la imagen en carpeta public/posts-images
+        $image_url = $this->image->store('posts-images');
+
         Post::create([
             'title' => $this->title,
             'content' => $this->content,
+            'image' => $image_url,
         ]);
 
         // Para que limpie variables y apague ventana modal
-        $this->reset(['open','title','content']);
+        $this->reset(['open','title','content','image']);
+        $this->idinputimagen = rand(); //init con numero al azar
 
-        // Para que emita el evento y lo escuche show-post
         $this->emitTo('show-posts','render');
         $this->emit('alerta', 'El Post se creó satisfactoriamente');
+        
     }
 
     public function render(){
