@@ -36,7 +36,7 @@ class CreatePost extends Component
         sleep(1); // simular tiempo de carga internet
         
         // guardar la imagen en carpeta public/posts-images
-        $image_url = $this->image->store('posts-images');
+        $image_url = $this->image->store('public/posts-images');
 
         Post::create([
             'title' => $this->title,
