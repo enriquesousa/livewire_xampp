@@ -4,12 +4,27 @@ namespace App\Http\Livewire;
 
 use App\Models\Post;
 use Livewire\Component;
+use Illuminate\Support\Facades\Storage;
 
 class ShowPosts extends Component
 {
-    public $search;
+    public $search, $post, $image, $idinputimagen;
     public $sort = 'id';
     public $direction = 'desc';
+
+    public $open_edit = false;
+
+    public function mount(){
+        $this->idinputimagen = rand();
+        // esto es para que la variable $image se convierta ya en un objeto
+        // el cual la estaremos usando en el modal de resources/views/livewire/show-posts.blade.php
+        $this->post = new Post();
+    }
+
+    protected $rules = [
+        'post.title' => 'required',
+        'post.content' => 'required',
+    ];
 
     // Cuando escuches el evento render ejecuta el método render
     // protected $listeners = ['render' => 'render'];
@@ -39,6 +54,28 @@ class ShowPosts extends Component
             $this->sort = $sort;
             $this->direction = 'asc';
         }
+    }
+
+    public function edit(Post $post){
+        $this->post = $post;
+        $this->open_edit = true;
+    }
+
+    public function update(){
+        $this->validate();
+
+        //check si escogieron una imagen, eliminamos imagen almacenada
+        if ($this->image) {
+            // eliminamos imagen almacenada
+            Storage::delete([$this->post->image]);
+            // subir nueva imagen
+            $this->post->image = $this->image->store('public/posts-images');
+        }
+
+        $this->post->save();
+        $this->reset(['open_edit', 'image']);
+        $this->idinputimagen = rand();
+        $this->emit('alerta', 'El Post se actualizó satisfactoriamente');
     }
     
 }
