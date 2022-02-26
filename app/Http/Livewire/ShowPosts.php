@@ -18,6 +18,17 @@ class ShowPosts extends Component
     public $direction = 'desc';
 
     public $open_edit = false;
+    
+    protected $rules = [
+        'post.title' => 'required',
+        'post.content' => 'required',
+    ];
+
+    /* Cuando escuches el evento render ejecuta el método render
+    * protected $listeners = ['render' => 'render'];
+    * Cuando el nombre de listener es igual al del método podemos omitir uno asi: 
+    */
+    protected $listeners = ['render'];
 
     public function mount(){
         $this->idinputimagen = rand();
@@ -26,15 +37,11 @@ class ShowPosts extends Component
         $this->post = new Post();
     }
 
-    protected $rules = [
-        'post.title' => 'required',
-        'post.content' => 'required',
-    ];
-
-    /* Cuando escuches el evento render ejecuta el método render
-    protected $listeners = ['render' => 'render'];
-    Cuando el nombre de listener es igual al del método podemos omitir uno asi: */
-    protected $listeners = ['render'];
+    public function updatingSearch(){
+        // Este método se va a ejecutar cada vez que se haga un cambio a la propiedad $search
+        // Y resetPage() nos ayuda a quitar la paginación del componente para poder encontrar el registro 
+        $this->resetPage();
+    }
 
     public function render()
     {
