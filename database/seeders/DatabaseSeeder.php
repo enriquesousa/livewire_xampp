@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         Storage::deleteDirectory('public/posts-images');
         Storage::makeDirectory('public/posts-images');
 
-        \App\Models\Post::factory(10)->create();
+        \App\Models\Post::factory(100)->create();
     }
 }
