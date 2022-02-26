@@ -34,10 +34,17 @@
                 <x-jet-input-error for='title' />
             </div>
 
+            {{ $content }}
+
             {{-- Contenido del post --}}
-            <div class="mb-4">
+            <div class="mb-4" wire:ignore>
                 <x-jet-label value="Contenido del Post"></x-jet-label>
-                <textarea wire:model.defer="content" class="form-control w-full" rows="6"></textarea>
+                <textarea id="editor" 
+                        wire:model.defer="content" 
+                        class="form-control w-full" 
+                        rows="6">
+
+                </textarea>
                 <x-jet-input-error for='content' />
             </div>
 
@@ -66,5 +73,24 @@
         </x-slot>
 
     </x-jet-dialog-modal>
+
+    @push('js')
+        <script src="https://cdn.ckeditor.com/ckeditor5/32.0.0/classic/ckeditor.js"></script>
+
+        {{-- inicializar pulgin https://ckeditor.com/docs/ckeditor5/latest/builds/guides/quick-start.html --}}
+        <script>
+            ClassicEditor
+                .create( document.querySelector( '#editor' ) )
+                .then(function(editor){
+                    editor.model.document.on('change:data', () => {
+                        @this.set('content', editor.getData());    
+                    })
+                })
+                .catch( error => {
+                    console.error( error );
+                } );
+        </script>
+
+    @endpush
 
 </div>

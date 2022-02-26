@@ -123,8 +123,12 @@
 
             @else
                 <div class="px-4 py-3">
-                    No existe ningún registro coincidente.
-                    <i class="fas fa-spinner"></i>
+                    @if ($readyToLoad == false)
+                        Cargando, favor de esperar ... <br>
+                        <i class="fas fa-spinner"></i>
+                    @else
+                        No existe ningún registro coincidente.
+                    @endif
                 </div>
             @endif
 
