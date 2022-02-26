@@ -18,6 +18,7 @@ class ShowPosts extends Component
     public $sort = 'id';
     public $direction = 'desc';
     public $cant = '10';
+    public $readyToLoad = false;
 
     public $open_edit = false;
 
@@ -54,14 +55,17 @@ class ShowPosts extends Component
         $this->resetPage();
     }
 
-    public function render()
-    {
-        // $posts = Post::all();
-        $posts = Post::where('title', 'like', '%' . $this->search . '%')
-                        ->orWhere('content', 'like', '%' . $this->search . '%')
-                        ->orderBy($this->sort, $this->direction)
-                        ->paginate($this->cant);
+    public function render(){
         
+        if ($this->readyToLoad) {
+            $posts = Post::where('title', 'like', '%' . $this->search . '%')
+                ->orWhere('content', 'like', '%' . $this->search . '%')
+                ->orderBy($this->sort, $this->direction)
+                ->paginate($this->cant);    
+        }else{
+            $posts = [];
+        }
+
         return view('livewire.show-posts', compact('posts'));
     }
 
@@ -99,6 +103,12 @@ class ShowPosts extends Component
         $this->reset(['open_edit', 'image']);
         $this->idinputimagen = rand();
         $this->emit('alerta', 'El Post se actualizó satisfactoriamente');
+    }
+
+    public function loadPosts(){
+        // para indicar a la vista show-posts que ya se cargaron todos los elementos
+        sleep(1); // para simular el tiempo de carga de una pagina grande! con imágenes.
+        $this->readyToLoad = true;
     }
     
 }

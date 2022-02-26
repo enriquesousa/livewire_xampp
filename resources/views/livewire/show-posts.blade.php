@@ -1,4 +1,4 @@
-<div>
+<div wire:init='loadPosts'>
     {{-- If your happiness depends on money, you will never be happy with yourself. --}}
 
     <x-slot name="header">
@@ -25,7 +25,8 @@
                 @livewire('create-post')
             </div>
 
-            @if ($posts->count())
+            @if (count($posts))
+
                 <table class="table-auto w-full">
 
                     <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
@@ -113,18 +114,19 @@
                     </tbody>
 
                 </table>
+
+                @if ($posts->hasPages())
+                    <div class="px-6 py-3">
+                        {{ $posts->links() }}
+                    </div>    
+                @endif
+
             @else
                 <div class="px-4 py-3">
                     No existe ningún registro coincidente.
+                    <i class="fas fa-spinner"></i>
                 </div>
             @endif
-            
-            @if ($posts->hasPages())
-                <div class="px-6 py-3">
-                    {{ $posts->links() }}
-                </div>    
-            @endif
-            
 
         </x-table>
     </div>
