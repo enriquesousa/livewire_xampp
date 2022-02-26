@@ -22,6 +22,8 @@ class ShowPosts extends Component
 
     public $open_edit = false;
 
+    protected $listeners = ['render', 'delete'];
+
     public $queryString = [
         // poner el parámetro que queremos que viaje por la url
         // Y usamos except p/no mostrar cuando los parámetros son los predeterminados
@@ -35,12 +37,6 @@ class ShowPosts extends Component
         'post.title' => 'required',
         'post.content' => 'required',
     ];
-
-    /* Cuando escuches el evento render ejecuta el método render
-    * protected $listeners = ['render' => 'render'];
-    * Cuando el nombre de listener es igual al del método podemos omitir uno asi: 
-    */
-    protected $listeners = ['render'];
 
     public function mount(){
         $this->idinputimagen = rand();
@@ -69,8 +65,7 @@ class ShowPosts extends Component
         return view('livewire.show-posts', compact('posts'));
     }
 
-    public function order($sort)
-    {   
+    public function order($sort){   
         if ($this->sort == $sort) {
             if ($this->direction == 'desc') {
                 $this->direction = 'asc';
@@ -110,5 +105,9 @@ class ShowPosts extends Component
         sleep(1); // para simular el tiempo de carga de una pagina grande! con imágenes.
         $this->readyToLoad = true;
     }
-    
+
+    public function delete(Post $post){
+        $post->delete();
+    }
+
 }

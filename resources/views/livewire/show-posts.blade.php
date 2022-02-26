@@ -103,11 +103,19 @@
                                         {!! $item->content !!}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    {{-- @livewire('edit-post', ['post' => $post], key($post->id)) --}}
+                                <td class="px-6 py-4 text-sm font-medium flex">
+                                    
+                                    {{-- botón verde Editar --}}
                                     <a class="btn btn-green" wire:click="edit({{ $item }})">
                                         <i class="fas fa-edit"></i>
                                     </a>
+
+                                    {{-- botón rojo Eliminar --}}
+                                    <a class="btn btn-red ml-2" 
+                                        wire:click="$emit('deletePost', {{ $item->id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -189,5 +197,36 @@
         </x-slot>
 
     </x-jet-dialog-modal>
+
+    @push('js')
+
+        <script src="sweetalert2.all.min.js"></script>
+
+        <script>
+            Livewire.on('deletePost', postId => {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        Livewire.emitTo('show-posts', 'delete', postId);
+
+                        Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        )
+                    }
+                })
+            });
+        </script>
+
+    @endpush
 
 </div>
