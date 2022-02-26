@@ -5,9 +5,14 @@ namespace App\Http\Livewire;
 use App\Models\Post;
 use Livewire\Component;
 use Illuminate\Support\Facades\Storage;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class ShowPosts extends Component
 {
+    use WithFileUploads;
+    use WithPagination;
+
     public $search, $post, $image, $idinputimagen;
     public $sort = 'id';
     public $direction = 'desc';
@@ -16,8 +21,8 @@ class ShowPosts extends Component
 
     public function mount(){
         $this->idinputimagen = rand();
-        // esto es para que la variable $image se convierta ya en un objeto
-        // el cual la estaremos usando en el modal de resources/views/livewire/show-posts.blade.php
+        /* esto es para que la variable $image se convierta ya en un objeto
+        el cual la estaremos usando en el modal de resources/views/livewire/show-posts.blade.php */
         $this->post = new Post();
     }
 
@@ -26,9 +31,9 @@ class ShowPosts extends Component
         'post.content' => 'required',
     ];
 
-    // Cuando escuches el evento render ejecuta el método render
-    // protected $listeners = ['render' => 'render'];
-    // Cuando el nombre de listener es igual al del método podemos omitir uno asi:
+    /* Cuando escuches el evento render ejecuta el método render
+    protected $listeners = ['render' => 'render'];
+    Cuando el nombre de listener es igual al del método podemos omitir uno asi: */
     protected $listeners = ['render'];
 
     public function render()
@@ -37,7 +42,7 @@ class ShowPosts extends Component
         $posts = Post::where('title', 'like', '%' . $this->search . '%')
                         ->orWhere('content', 'like', '%' . $this->search . '%')
                         ->orderBy($this->sort, $this->direction)
-                        ->get();
+                        ->paginate(5);
         
         return view('livewire.show-posts', compact('posts'));
     }

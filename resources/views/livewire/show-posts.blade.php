@@ -20,7 +20,7 @@
 
                     <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
                         <tr>
-                            <th class="px-6 whitespace-nowrap">
+                            <th class="px-4 whitespace-nowrap">
                                 <div class="cursor-pointer font-semibold text-left" wire:click="order('id')">
                                     ID
                                     {{-- sort --}}
@@ -108,6 +108,13 @@
                     No existe ningún registro coincidente.
                 </div>
             @endif
+            
+            @if ($posts->hasPages())
+                <div class="px-6 py-3">
+                    {{ $posts->links() }}
+                </div>    
+            @endif
+            
 
         </x-table>
     </div>
